@@ -2,26 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html,
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #000;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Admin pages need scrolling */
+.admin-page {
+  overflow: auto;
+}
+
+/* Basketball bounce */
+@keyframes bball-bounce {
+  0%   { transform: translateY(0px);    animation-timing-function: ease-in; }
+  45%  { transform: translateY(0px);    animation-timing-function: ease-in; }
+  50%  { transform: translateY(-130px); animation-timing-function: ease-out; }
+  95%  { transform: translateY(-130px); animation-timing-function: ease-out; }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes bball-bounce-simple {
+  0%, 100% { transform: translateY(0px);    animation-timing-function: cubic-bezier(0.33, 0, 0.66, 0); }
+  50%       { transform: translateY(-130px); animation-timing-function: cubic-bezier(0.33, 1, 0.66, 1); }
+}
+
+@keyframes shadow-pulse {
+  0%, 100% { transform: scaleX(1);   opacity: 0.5; }
+  50%       { transform: scaleX(0.35); opacity: 0.15; }
+}
+
+@keyframes splash-fade-out {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes hero-fade-in {
+  0%   { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hero-fade-out {
+  0%   { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
 }
