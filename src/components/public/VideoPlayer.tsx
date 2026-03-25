@@ -7,7 +7,7 @@ import SplashScreen from './SplashScreen'
 import HeroOverlay from './HeroOverlay'
 import type { DeviceType, Difficulty } from '@/types'
 
-type PlayerState = 'splash' | 'hero' | 'playing'
+type PlayerState = 'splash' | 'hero' | 'loading' | 'playing'
 
 interface Props {
   defaultDeviceType: DeviceType
@@ -34,6 +34,7 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
   const handleWatch = useCallback(async (difficulty: Difficulty) => {
     if (!moveInfo) return
     setHeroVisible(false)
+    setState('loading') // Show loading state immediately
 
     const res = await fetch(
       `/api/video?move=${encodeURIComponent(moveInfo.move_name)}&difficulty=${difficulty}&device=${deviceType}`
@@ -78,9 +79,14 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
         }}
       />
 
-      {/* Splash screen */}
-      {state === 'splash' && (
-        <SplashScreen onComplete={() => setSplashDone(true)} />
+      {/* Splash screen - also shown during video loading */}
+      {(state === 'splash' || state === 'loading') && (
+        <SplashScreen 
+          onComplete={() => {
+            if (state === 'splash') setSplashDone(true)
+          }} 
+          isLoading={state === 'loading'}
+        />
       )}
 
       {/* Hero overlay */}
