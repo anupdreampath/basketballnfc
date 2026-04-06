@@ -82,18 +82,19 @@ export default function HeroOverlay({
       >
         <div style={{ padding: '52px 48px 40px', textAlign: 'center' }}>
 
-          {/* Title — Montserrat Black, wraps to 2 lines */}
+          {/* Title — Montserrat Black, fits on one line */}
           <h1
             style={{
               fontFamily: display,
-              fontSize: 'clamp(3.8rem, 10vw, 5.5rem)',
+              fontSize: 'clamp(2.8rem, 8vw, 4rem)',
               fontWeight: 900,
               textTransform: 'uppercase',
               letterSpacing: '0.08em',
-              lineHeight: 1.0,
+              lineHeight: 1.1,
               color: '#ffffff',
               margin: 0,
               marginBottom: description ? 22 : 0,
+              whiteSpace: 'nowrap',
             }}
           >
             {moveName}
