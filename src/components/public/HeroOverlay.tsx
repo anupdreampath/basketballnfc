@@ -86,15 +86,18 @@ export default function HeroOverlay({
           <h1
             style={{
               fontFamily: display,
-              fontSize: 'clamp(2.8rem, 8vw, 4rem)',
+              fontSize: 'clamp(2.0rem, 8vw, 3.6rem)',
               fontWeight: 900,
               textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              lineHeight: 1.1,
+              letterSpacing: '0.06em',
+              lineHeight: 1.15,
               color: '#ffffff',
               margin: 0,
               marginBottom: description ? 22 : 0,
               whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              maxWidth: '100%',
             }}
           >
             {moveName}
