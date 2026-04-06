@@ -57,6 +57,9 @@ export function resolveActiveMove(
   return {
     move_name: moveName,
     display_name: moveName,
+    description: null,
+    level: null,
+    quote: null,
     difficulties: ordered,
     default_difficulty: ordered[0],
     source,
