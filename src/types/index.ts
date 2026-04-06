@@ -41,6 +41,10 @@ export interface Settings {
   scheduler_enabled: boolean
   override_move_name: string | null
   front_page_title: string | null
+  move_description: string | null
+  move_level: string | null
+  move_quote: string | null
+  default_difficulty: Difficulty
   slot_beginner_mobile_id: string | null
   slot_beginner_tablet_id: string | null
   slot_beginner_desktop_id: string | null
@@ -69,6 +73,9 @@ export interface MoveInfo {
 export interface ActiveMoveResponse {
   move_name: string       // used for video lookup (internal)
   display_name: string    // shown in hero (= front_page_title ?? move_name)
+  description: string | null
+  level: string | null
+  quote: string | null
   difficulties: Difficulty[]
   default_difficulty: Difficulty
   source: 'override' | 'schedule' | 'fallback'

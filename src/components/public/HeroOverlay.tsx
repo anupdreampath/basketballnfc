@@ -1,19 +1,30 @@
 'use client'
 
-import { useState } from 'react'
 import type { Difficulty } from '@/types'
-import { DIFFICULTY_LABELS } from '@/types'
 
 interface Props {
   moveName: string
-  availableDifficulties: Difficulty[]
+  defaultDifficulty: Difficulty
+  description?: string | null
+  level?: string | null
+  quote?: string | null
   onWatch: (difficulty: Difficulty) => void
   visible: boolean
 }
 
-export default function HeroOverlay({ moveName, availableDifficulties, onWatch, visible }: Props) {
-  const [selected, setSelected] = useState<Difficulty>(availableDifficulties[0])
+const serif   = 'var(--font-cormorant), Georgia, "Times New Roman", serif'
+const display = 'var(--font-montserrat), "Helvetica Neue", Arial, sans-serif'
+const sansUI  = 'system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif'
 
+export default function HeroOverlay({
+  moveName,
+  defaultDifficulty,
+  description,
+  level,
+  quote,
+  onWatch,
+  visible,
+}: Props) {
   return (
     <div
       style={{
@@ -23,116 +34,187 @@ export default function HeroOverlay({ moveName, availableDifficulties, onWatch, 
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'rgba(0, 0, 0, 0.88)',
+        flexDirection: 'column',
+        background: 'rgba(0,0,0,0.90)',
         transition: 'opacity 0.6s ease',
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? 'auto' : 'none',
         padding: '1.5rem',
       }}
     >
-      {/* Boxy card */}
+      {/* "move of the day" — outside card, Cormorant 300 italic */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          marginBottom: 20,
+          width: '100%',
+          maxWidth: 620,
+        }}
+      >
+        <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.18)' }} />
+        <p
+          style={{
+            fontFamily: serif,
+            fontSize: '1rem',
+            fontWeight: 300,
+            fontStyle: 'italic',
+            letterSpacing: '0.28em',
+            color: 'rgba(255,255,255,0.45)',
+            margin: 0,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          move of the day
+        </p>
+        <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.18)' }} />
+      </div>
+
+      {/* Card */}
       <div
         style={{
           width: '100%',
-          maxWidth: 480,
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          background: 'rgba(255, 255, 255, 0.03)',
+          maxWidth: 620,
+          border: '1px solid rgba(255,255,255,0.10)',
+          background: 'rgba(10,10,10,0.6)',
         }}
       >
-        {/* Move name section */}
-        <div
-          style={{
-            padding: '40px 32px 32px',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-            textAlign: 'center',
-          }}
-        >
+        <div style={{ padding: '52px 48px 40px', textAlign: 'center' }}>
+
+          {/* Title — Montserrat Black, wraps to 2 lines */}
           <h1
             style={{
-              color: '#fff',
-              fontSize: 'clamp(2rem, 8vw, 3.5rem)',
+              fontFamily: display,
+              fontSize: 'clamp(3.8rem, 10vw, 5.5rem)',
               fontWeight: 900,
               textTransform: 'uppercase',
-              letterSpacing: '0.12em',
-              lineHeight: 1.1,
+              letterSpacing: '0.08em',
+              lineHeight: 1.0,
+              color: '#ffffff',
               margin: 0,
+              marginBottom: description ? 22 : 0,
             }}
           >
             {moveName}
           </h1>
-          <p
-            style={{
-              color: 'rgba(255, 255, 255, 0.35)',
-              fontSize: '0.75rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              marginTop: 12,
-            }}
-          >
-            Select difficulty
-          </p>
-        </div>
 
-        {/* Difficulty tabs */}
-        <div
-          style={{
-            display: 'flex',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          }}
-        >
-          {availableDifficulties.map((d) => (
-            <button
-              key={d}
-              onClick={() => setSelected(d)}
+          {/* Description */}
+          {description && (
+            <p
               style={{
-                flex: 1,
-                padding: '14px 8px',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-                border: 'none',
-                borderBottom: selected === d ? '2px solid #f97316' : '2px solid transparent',
-                background: selected === d ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-                color: selected === d ? '#fff' : 'rgba(255, 255, 255, 0.5)',
-                transition: 'all 0.2s',
+                fontFamily: sansUI,
+                fontSize: '1.05rem',
+                fontWeight: 400,
+                lineHeight: 1.6,
+                color: 'rgba(255,255,255,0.65)',
+                margin: 0,
               }}
             >
-              {DIFFICULTY_LABELS[d]}
-            </button>
-          ))}
-        </div>
+              {description}
+            </p>
+          )}
 
-        {/* Watch button */}
-        <div style={{ padding: '20px 24px' }}>
+          {/* Divider */}
+          <div
+            style={{
+              height: '1px',
+              background: 'rgba(255,255,255,0.10)',
+              margin: '32px 0',
+            }}
+          />
+
+          {/* Level */}
+          {level && (
+            <p
+              style={{
+                fontFamily: display,
+                fontSize: '1rem',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.18em',
+                color: 'rgba(255,255,255,0.80)',
+                margin: '0 0 18px 0',
+              }}
+            >
+              {level}
+            </p>
+          )}
+
+          {/* Quote — Cormorant italic */}
+          {quote && (
+            <p
+              style={{
+                fontFamily: serif,
+                fontSize: '1.25rem',
+                fontWeight: 400,
+                fontStyle: 'italic',
+                lineHeight: 1.6,
+                color: 'rgba(255,255,255,0.55)',
+                margin: '0 0 36px 0',
+              }}
+            >
+              &ldquo;{quote}&rdquo;
+            </p>
+          )}
+
+          {/* Watch Video button */}
           <button
-            onClick={() => onWatch(selected)}
+            onClick={() => onWatch(defaultDifficulty)}
             style={{
               width: '100%',
-              padding: '14px',
+              padding: '18px',
               background: '#f97316',
               color: '#fff',
               border: 'none',
-              fontSize: '0.9rem',
+              fontFamily: sansUI,
+              fontSize: '0.95rem',
               fontWeight: 700,
-              letterSpacing: '0.08em',
+              letterSpacing: '0.14em',
               textTransform: 'uppercase',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: 10,
+              gap: 12,
               transition: 'background 0.15s',
             }}
             onMouseEnter={(e) => { e.currentTarget.style.background = '#ea580c' }}
             onMouseLeave={(e) => { e.currentTarget.style.background = '#f97316' }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z" />
             </svg>
             Watch Video
           </button>
+
+          {/* YOUR TURN */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 14,
+              marginTop: 22,
+            }}
+          >
+            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+            <p
+              style={{
+                fontFamily: sansUI,
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                letterSpacing: '0.22em',
+                textTransform: 'uppercase',
+                color: '#f97316',
+                margin: 0,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Your Turn
+            </p>
+            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+          </div>
+
         </div>
       </div>
     </div>

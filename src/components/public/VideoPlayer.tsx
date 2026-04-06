@@ -5,9 +5,10 @@ import { useDeviceType } from '@/hooks/useDeviceType'
 import { useActiveMoveInfo } from '@/hooks/useActiveMoveInfo'
 import SplashScreen from './SplashScreen'
 import HeroOverlay from './HeroOverlay'
+import DifficultyIntro from './DifficultyIntro'
 import type { DeviceType, Difficulty } from '@/types'
 
-type PlayerState = 'splash' | 'hero' | 'loading' | 'playing'
+type PlayerState = 'splash' | 'hero' | 'difficulty-intro' | 'loading' | 'playing'
 
 interface Props {
   defaultDeviceType: DeviceType
@@ -22,6 +23,7 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
   const [splashDone, setSplashDone] = useState(false)
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [heroVisible, setHeroVisible] = useState(false)
+  const [chosenDifficulty, setChosenDifficulty] = useState<Difficulty | null>(null)
 
   // Transition splash → hero once both splash timer AND move data are ready
   useEffect(() => {
@@ -34,15 +36,21 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
   const handleWatch = useCallback(async (difficulty: Difficulty) => {
     if (!moveInfo) return
     setHeroVisible(false)
-    setState('loading') // Show loading state immediately
+    setChosenDifficulty(difficulty)
+    setState('difficulty-intro') // Show calligraphic difficulty intro first
+  }, [moveInfo])
+
+  const handleIntroComplete = useCallback(async () => {
+    if (!moveInfo || !chosenDifficulty) return
+    setState('loading')
 
     const res = await fetch(
-      `/api/video?move=${encodeURIComponent(moveInfo.move_name)}&difficulty=${difficulty}&device=${deviceType}`
+      `/api/video?move=${encodeURIComponent(moveInfo.move_name)}&difficulty=${chosenDifficulty}&device=${deviceType}`
     )
     if (!res.ok) { setState('playing'); return }
     const data = await res.json()
     setVideoUrl(data.url)
-  }, [moveInfo, deviceType])
+  }, [moveInfo, chosenDifficulty, deviceType])
 
   // Play video once URL is available
   useEffect(() => {
@@ -52,7 +60,7 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
     el.load()
     el.play()
       .then(() => {
-        setTimeout(() => setState('playing'), 600) // wait for hero fade-out
+        setTimeout(() => setState('playing'), 600)
       })
       .catch(() => setState('playing'))
   }, [videoUrl])
@@ -73,7 +81,7 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
           height: '100vh',
           objectFit: 'cover',
           background: '#000',
-          opacity: state === 'playing' ? 1 : state === 'hero' ? 0.25 : 0,
+          opacity: state === 'playing' ? 1 : (state === 'hero' || state === 'difficulty-intro') ? 0.3 : 0,
           transition: 'opacity 0.8s ease',
           zIndex: 1,
         }}
@@ -81,11 +89,19 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
 
       {/* Splash screen - also shown during video loading */}
       {(state === 'splash' || state === 'loading') && (
-        <SplashScreen 
+        <SplashScreen
           onComplete={() => {
             if (state === 'splash') setSplashDone(true)
-          }} 
+          }}
           isLoading={state === 'loading'}
+        />
+      )}
+
+      {/* Difficulty intro splash — calligraphic text before video */}
+      {state === 'difficulty-intro' && chosenDifficulty && (
+        <DifficultyIntro
+          difficulty={chosenDifficulty}
+          onComplete={handleIntroComplete}
         />
       )}
 
@@ -93,7 +109,10 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
       {(state === 'hero' || (state === 'playing' && heroVisible)) && moveInfo && (
         <HeroOverlay
           moveName={moveInfo.display_name ?? moveInfo.move_name}
-          availableDifficulties={moveInfo.difficulties}
+          defaultDifficulty={moveInfo.default_difficulty}
+          description={moveInfo.description}
+          level={moveInfo.level}
+          quote={moveInfo.quote}
           onWatch={handleWatch}
           visible={heroVisible}
         />

@@ -1,0 +1,14 @@
+
+> nfc-brand-video@0.1.0 dev
+> next dev -p 3001
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3001
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 2.2s
+ ○ Compiling / ...
+ ✓ Compiled / in 2.3s (1326 modules)
+ GET / 200 in 2559ms
+ ✓ Compiled in 261ms (653 modules)

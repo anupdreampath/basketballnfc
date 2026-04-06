@@ -22,6 +22,9 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [titleDraft, setTitleDraft] = useState('')
+  const [descriptionDraft, setDescriptionDraft] = useState('')
+  const [levelDraft, setLevelDraft] = useState('')
+  const [quoteDraft, setQuoteDraft] = useState('')
 
   const fetchAll = useCallback(async () => {
     const [s, v] = await Promise.all([fetch('/api/settings'), fetch('/api/videos')])
@@ -29,6 +32,9 @@ export default function SettingsPage() {
     const vData: Video[] = await v.json()
     setSettings(sData)
     setTitleDraft(sData.front_page_title ?? '')
+    setDescriptionDraft(sData.move_description ?? '')
+    setLevelDraft(sData.move_level ?? '')
+    setQuoteDraft(sData.move_quote ?? '')
     setVideos(Array.isArray(vData) ? vData : [])
   }, [])
 
@@ -97,6 +103,154 @@ export default function SettingsPage() {
           </button>
         </div>
         <p className="text-gray-600 text-xs mt-2">Leave blank to use the move name from the video library.</p>
+      </div>
+
+      {/* ── Section 1b: Move Description ── */}
+      <div className="bg-zinc-900 rounded-xl p-5 border border-zinc-800 mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-white font-medium">Move Description</p>
+            <p className="text-gray-500 text-sm mt-0.5">1–2 sentences describing the move.</p>
+          </div>
+          {savingIndicator}
+        </div>
+        <div className="flex gap-2">
+          <textarea
+            value={descriptionDraft}
+            onChange={(e) => setDescriptionDraft(e.target.value)}
+            onBlur={() => {
+              if (descriptionDraft !== (settings.move_description ?? '')) {
+                save({ move_description: descriptionDraft.trim() || null })
+              }
+            }}
+            placeholder="e.g. A quick shift to create space and beat your defender."
+            className="flex-1 bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 placeholder-gray-600 min-h-20 resize-none"
+          />
+          <button
+            onClick={() => save({ move_description: descriptionDraft.trim() || null })}
+            disabled={saving}
+            className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-lg px-4 py-2 text-sm font-medium h-fit"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+
+      {/* ── Section 1c: Move Level ── */}
+      <div className="bg-zinc-900 rounded-xl p-5 border border-zinc-800 mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-white font-medium">Move Level</p>
+            <p className="text-gray-500 text-sm mt-0.5">E.g. "LEVEL: PRO" or any custom text.</p>
+          </div>
+          {savingIndicator}
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={levelDraft}
+            onChange={(e) => setLevelDraft(e.target.value)}
+            onBlur={() => {
+              if (levelDraft !== (settings.move_level ?? '')) {
+                save({ move_level: levelDraft.trim() || null })
+              }
+            }}
+            placeholder="e.g. LEVEL: PRO"
+            className="flex-1 bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 placeholder-gray-600"
+          />
+          <button
+            onClick={() => save({ move_level: levelDraft.trim() || null })}
+            disabled={saving}
+            className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-lg px-4 py-2 text-sm font-medium"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+
+      {/* ── Section 1d: Inspirational Quote ── */}
+      <div className="bg-zinc-900 rounded-xl p-5 border border-zinc-800 mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-white font-medium">Inspirational Quote</p>
+            <p className="text-gray-500 text-sm mt-0.5">A motivational quote displayed below the level.</p>
+          </div>
+          {savingIndicator}
+        </div>
+        <div className="flex gap-2">
+          <textarea
+            value={quoteDraft}
+            onChange={(e) => setQuoteDraft(e.target.value)}
+            onBlur={() => {
+              if (quoteDraft !== (settings.move_quote ?? '')) {
+                save({ move_quote: quoteDraft.trim() || null })
+              }
+            }}
+            placeholder="e.g. Separation is created, not given."
+            className="flex-1 bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 placeholder-gray-600 min-h-20 resize-none"
+          />
+          <button
+            onClick={() => save({ move_quote: quoteDraft.trim() || null })}
+            disabled={saving}
+            className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-lg px-4 py-2 text-sm font-medium h-fit"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+
+      {/* ── Section 1e: Default Difficulty (shown to all users) ── */}
+      <div className="bg-zinc-900 rounded-xl p-5 border border-zinc-800 mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-white font-medium">Default Difficulty</p>
+            <p className="text-gray-500 text-sm mt-0.5">Choose which difficulty video everyone sees when they tap Watch Video.</p>
+          </div>
+          {savingIndicator}
+        </div>
+        <div className="flex gap-2">
+          {DIFFICULTIES.map((diff) => {
+            const isActive = (settings.default_difficulty ?? 'pro') === diff
+            return (
+              <button
+                key={diff}
+                onClick={() => save({ default_difficulty: diff } as any)}
+                disabled={saving}
+                className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold uppercase tracking-wide transition-all border ${
+                  isActive
+                    ? diff === 'beginner'
+                      ? 'bg-green-500/20 border-green-500 text-green-300'
+                      : diff === 'intermediate'
+                      ? 'bg-orange-500/20 border-orange-500 text-orange-300'
+                      : 'bg-red-500/20 border-red-500 text-red-300'
+                    : 'bg-zinc-800 border-zinc-700 text-gray-500 hover:border-zinc-600'
+                }`}
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <div className={`w-3 h-3 rounded-full border-2 flex items-center justify-center ${
+                    isActive
+                      ? diff === 'beginner'
+                        ? 'border-green-400'
+                        : diff === 'intermediate'
+                        ? 'border-orange-400'
+                        : 'border-red-400'
+                      : 'border-zinc-600'
+                  }`}>
+                    {isActive && (
+                      <div className={`w-1.5 h-1.5 rounded-full ${
+                        diff === 'beginner' ? 'bg-green-400'
+                        : diff === 'intermediate' ? 'bg-orange-400'
+                        : 'bg-red-400'
+                      }`} />
+                    )}
+                  </div>
+                  {DIFFICULTY_LABELS[diff]}
+                </div>
+              </button>
+            )
+          })}
+        </div>
+        <p className="text-gray-600 text-xs mt-3">Only one can be active. This determines which video plays for all users and shows as a splash intro.</p>
       </div>
 
       {/* ── Section 2: Video Slot Assignment ── */}
