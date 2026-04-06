@@ -54,6 +54,11 @@ export function resolveActiveMove(
     return null
   }
 
+  // Use schedule's difficulty as default if set and available
+  const scheduleDifficulty = source === 'schedule' && currentSchedules[0]?.difficulty
+    ? currentSchedules[0].difficulty
+    : null
+
   return {
     move_name: moveName,
     display_name: moveName,
@@ -61,7 +66,9 @@ export function resolveActiveMove(
     level: null,
     quote: null,
     difficulties: ordered,
-    default_difficulty: ordered[0],
+    default_difficulty: scheduleDifficulty && ordered.includes(scheduleDifficulty)
+      ? scheduleDifficulty
+      : ordered[0],
     source,
   }
 }

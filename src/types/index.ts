@@ -27,6 +27,8 @@ export interface Schedule {
   id: string
   video_id: string | null
   move_name: string | null
+  difficulty: Difficulty | null
+  preset_id: string | null
   device_type: DeviceType
   starts_at: string
   ends_at: string
@@ -34,6 +36,28 @@ export interface Schedule {
   is_active: boolean
   created_at: string
   video?: Video
+  preset?: Preset
+}
+
+export interface Preset {
+  id: string
+  name: string
+  override_move_name: string | null
+  default_difficulty: Difficulty | null
+  front_page_title: string | null
+  move_description: string | null
+  move_level: string | null
+  move_quote: string | null
+  slot_beginner_mobile_id: string | null
+  slot_beginner_tablet_id: string | null
+  slot_beginner_desktop_id: string | null
+  slot_intermediate_mobile_id: string | null
+  slot_intermediate_tablet_id: string | null
+  slot_intermediate_desktop_id: string | null
+  slot_pro_mobile_id: string | null
+  slot_pro_tablet_id: string | null
+  slot_pro_desktop_id: string | null
+  created_at: string
 }
 
 export interface Settings {

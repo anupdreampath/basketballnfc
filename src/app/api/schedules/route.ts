@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await request.json()
-  const { move_name, starts_at, ends_at, label } = body
+  const { move_name, starts_at, ends_at, label, difficulty } = body
 
   if (!move_name || !starts_at || !ends_at) {
     return NextResponse.json({ error: 'Missing required fields: move_name, starts_at, ends_at' }, { status: 400 })
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
   const supabase = createServiceClient()
   const { data, error } = await supabase
     .from('schedules')
-    .insert({ move_name, starts_at, ends_at, label: label || null, video_id: null, device_type: 'desktop' })
+    .insert({ move_name, starts_at, ends_at, label: label || null, difficulty: difficulty || null, video_id: null, device_type: 'desktop' })
     .select()
     .single()
 

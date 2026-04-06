@@ -1,0 +1,35 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e6]: 🏀
+          - generic [ref=e7]: Admin
+        - generic [ref=e8]:
+          - link "Videos" [ref=e9] [cursor=pointer]:
+            - /url: /admin/videos
+          - link "Schedule" [ref=e10] [cursor=pointer]:
+            - /url: /admin/schedule
+          - link "Settings" [ref=e11] [cursor=pointer]:
+            - /url: /admin/settings
+      - button "Sign out" [ref=e12] [cursor=pointer]
+    - main [ref=e13]:
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - heading "Videos" [level=1] [ref=e35]
+          - paragraph [ref=e36]: Upload and manage videos for each device type.
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - button "📱 Mobile" [ref=e40] [cursor=pointer]:
+              - generic [ref=e41]: 📱
+              - text: Mobile
+            - button "📟 Tablet" [ref=e42] [cursor=pointer]:
+              - generic [ref=e43]: 📟
+              - text: Tablet
+            - button "🖥️ Desktop" [ref=e44] [cursor=pointer]:
+              - generic [ref=e45]: 🖥️
+              - text: Desktop
+          - button "Upload mobile video" [disabled] [ref=e46]:
+            - img [ref=e47]
+            - text: Upload mobile video
+  - alert [ref=e32]

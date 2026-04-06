@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { Settings, Video, Difficulty, DeviceType } from '@/types'
 import { DIFFICULTIES, DIFFICULTY_LABELS } from '@/types'
+import PresetManager from '@/components/admin/PresetManager'
 
 const DEVICES: DeviceType[] = ['mobile', 'tablet', 'desktop']
 const DEVICE_LABELS: Record<DeviceType, string> = { mobile: 'Mobile', tablet: 'Tablet', desktop: 'Desktop' }
@@ -332,6 +333,11 @@ export default function SettingsPage() {
             <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${settings.scheduler_enabled ? 'translate-x-6' : 'translate-x-0'}`} />
           </button>
         </div>
+      </div>
+
+      {/* ── Section 3b: Move Presets ── */}
+      <div className="bg-zinc-900 rounded-xl p-5 border border-zinc-800 mb-4">
+        <PresetManager />
       </div>
 
       {/* ── Section 4: Manual Override Move ── */}

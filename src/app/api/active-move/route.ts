@@ -52,13 +52,16 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'no_move_found' }, { status: 404 })
   }
 
+  // Schedule difficulty takes priority over settings default
+  const scheduleDifficulty = result.source === 'schedule' && schedules?.[0]?.difficulty
+
   return NextResponse.json({
     ...result,
     display_name: (settings as any).front_page_title ?? result.move_name,
     description: (settings as any).move_description ?? null,
     level: (settings as any).move_level ?? null,
     quote: (settings as any).move_quote ?? null,
-    default_difficulty: (settings as any).default_difficulty ?? result.default_difficulty,
+    default_difficulty: scheduleDifficulty || (settings as any).default_difficulty || result.default_difficulty,
   }, {
     headers: { 'Cache-Control': 'public, max-age=30, stale-while-revalidate=60' },
   })

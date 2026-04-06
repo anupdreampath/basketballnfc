@@ -15,7 +15,7 @@ export async function PUT(
   }
 
   const body = await request.json()
-  const { video_id, starts_at, ends_at, label, is_active } = body
+  const { video_id, move_name, starts_at, ends_at, label, difficulty, is_active } = body
 
   if (ends_at && starts_at && new Date(ends_at) <= new Date(starts_at)) {
     return NextResponse.json({ error: 'End time must be after start time' }, { status: 400 })
@@ -24,7 +24,7 @@ export async function PUT(
   const supabase = createServiceClient()
   const { data, error } = await supabase
     .from('schedules')
-    .update({ video_id, starts_at, ends_at, label, is_active })
+    .update({ video_id, move_name, starts_at, ends_at, label, difficulty, is_active })
     .eq('id', params.id)
     .select('*, video:video_id(*)')
     .single()

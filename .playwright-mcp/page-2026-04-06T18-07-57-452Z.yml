@@ -1,0 +1,168 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e6]: 🏀
+          - generic [ref=e7]: Admin
+        - generic [ref=e8]:
+          - link "Videos" [ref=e9] [cursor=pointer]:
+            - /url: /admin/videos
+          - link "Schedule" [ref=e10] [cursor=pointer]:
+            - /url: /admin/schedule
+          - link "Settings" [ref=e11] [cursor=pointer]:
+            - /url: /admin/settings
+      - button "Sign out" [ref=e12] [cursor=pointer]
+    - main [ref=e13]:
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - heading "Schedule Planner" [level=1] [ref=e57]
+            - paragraph [ref=e58]: Plan your video content for weeks or months ahead. Set which move and difficulty plays each day.
+          - generic [ref=e59]:
+            - button "Bulk Schedule" [ref=e60] [cursor=pointer]:
+              - img [ref=e61]
+              - text: Bulk Schedule
+            - button "Add" [ref=e63] [cursor=pointer]:
+              - img [ref=e64]
+              - text: Add
+        - generic [ref=e67]:
+          - generic [ref=e70]: No scheduled move active — showing fallback (latest uploaded move).
+          - generic [ref=e71]:
+            - generic [ref=e72]: 1 this week
+            - generic [ref=e73]: 0 upcoming
+        - generic [ref=e74]:
+          - generic [ref=e75]:
+            - button [ref=e76] [cursor=pointer]:
+              - img [ref=e77]
+            - heading "Apr 6 – Apr 12, 2026" [level=2] [ref=e79]
+            - button [ref=e80] [cursor=pointer]:
+              - img [ref=e81]
+            - button "Today" [ref=e83] [cursor=pointer]
+          - generic [ref=e84]:
+            - button "Calendar" [ref=e85] [cursor=pointer]:
+              - img [ref=e86]
+              - text: Calendar
+            - button "List" [ref=e88] [cursor=pointer]:
+              - img [ref=e89]
+              - text: List
+        - generic [ref=e91]:
+          - generic [ref=e92]:
+            - generic [ref=e93]: Mon
+            - generic [ref=e94]: "6"
+            - generic [ref=e95]: TODAY
+          - generic [ref=e96]:
+            - generic [ref=e97]: Tue
+            - generic [ref=e98]: "7"
+          - generic [ref=e99]:
+            - generic [ref=e100]: Wed
+            - generic [ref=e101]: "8"
+          - generic [ref=e102]:
+            - generic [ref=e103]: Thu
+            - generic [ref=e104]: "9"
+          - generic [ref=e105]:
+            - generic [ref=e106]: Fri
+            - generic [ref=e107]: "10"
+          - generic [ref=e108]:
+            - generic [ref=e109]: Sat
+            - generic [ref=e110]: "11"
+          - generic [ref=e111]:
+            - generic [ref=e112]: Sun
+            - generic [ref=e113]: "12"
+          - generic [ref=e114]:
+            - button "IMG 4830 beginner 9:00 AM – 11:00 PM" [ref=e171] [cursor=pointer]:
+              - generic [ref=e174]: IMG 4830
+              - generic [ref=e175]: beginner
+              - generic [ref=e176]: 9:00 AM – 11:00 PM
+            - button [ref=e115] [cursor=pointer]:
+              - img [ref=e116]
+          - button [ref=e119] [cursor=pointer]:
+            - img [ref=e120]
+          - button [ref=e123] [cursor=pointer]:
+            - img [ref=e124]
+          - button [ref=e127] [cursor=pointer]:
+            - img [ref=e128]
+          - button [ref=e131] [cursor=pointer]:
+            - img [ref=e132]
+          - button [ref=e135] [cursor=pointer]:
+            - img [ref=e136]
+          - button [ref=e139] [cursor=pointer]:
+            - img [ref=e140]
+        - generic [ref=e204]:
+          - heading "Bulk Schedule" [level=3] [ref=e205]
+          - paragraph [ref=e206]: Plan an entire week or month at once. Choose a pattern and repeat it.
+          - generic [ref=e207]:
+            - generic [ref=e208]:
+              - button "Weekly Pattern" [ref=e209] [cursor=pointer]
+              - button "Quick Fill" [ref=e210] [cursor=pointer]
+            - generic [ref=e211]:
+              - generic [ref=e212]:
+                - generic [ref=e213]: Move
+                - combobox [ref=e214]:
+                  - option "-- Select --"
+                  - option "IMG 4830" [selected]
+                  - option "Landing Page Buttons"
+              - generic [ref=e215]:
+                - generic [ref=e216]: Start time
+                - textbox [ref=e217]: 09:00
+              - generic [ref=e218]:
+                - generic [ref=e219]: End time
+                - textbox [ref=e220]: 23:00
+            - generic [ref=e221]:
+              - generic [ref=e222]: Weekly Pattern
+              - paragraph [ref=e223]: Set a difficulty for each day. The pattern repeats for the number of weeks you choose.
+              - generic [ref=e224]:
+                - generic [ref=e225]:
+                  - button [ref=e226] [cursor=pointer]
+                  - generic [ref=e227]: MondayApr 6
+                - generic [ref=e228]:
+                  - button [ref=e229] [cursor=pointer]:
+                    - img [ref=e253]
+                  - generic [ref=e230]: TuesdayApr 7
+                  - combobox [ref=e255]:
+                    - option "All difficulties" [selected]
+                    - option "Beginner"
+                    - option "Intermediate"
+                    - option "Pro"
+                - generic [ref=e231]:
+                  - button [active] [ref=e232] [cursor=pointer]:
+                    - img [ref=e265]
+                  - generic [ref=e233]: WednesdayApr 8
+                  - combobox [ref=e267]:
+                    - option "All difficulties" [selected]
+                    - option "Beginner"
+                    - option "Intermediate"
+                    - option "Pro"
+                - generic [ref=e234]:
+                  - button [ref=e235] [cursor=pointer]
+                  - generic [ref=e236]: ThursdayApr 9
+                - generic [ref=e237]:
+                  - button [ref=e238] [cursor=pointer]
+                  - generic [ref=e239]: FridayApr 10
+                - generic [ref=e240]:
+                  - button [ref=e241] [cursor=pointer]
+                  - generic [ref=e242]: SaturdayApr 11
+                - generic [ref=e243]:
+                  - button [ref=e244] [cursor=pointer]
+                  - generic [ref=e245]: SundayApr 12
+              - generic [ref=e246]:
+                - generic [ref=e247]: Repeat for
+                - spinbutton [ref=e248]: "1"
+                - generic [ref=e249]: week
+            - generic [ref=e256]:
+              - generic [ref=e257]: Preview (2 schedules)
+              - generic [ref=e258]:
+                - generic [ref=e259]:
+                  - generic [ref=e260]: Tue, Apr 7
+                  - generic [ref=e261]: IMG 4830
+                  - generic [ref=e262]: All
+                  - generic [ref=e263]: 09:00 - 23:00
+                - generic [ref=e268]:
+                  - generic [ref=e269]: Wed, Apr 8
+                  - generic [ref=e270]: IMG 4830
+                  - generic [ref=e271]: All
+                  - generic [ref=e272]: 09:00 - 23:00
+            - generic [ref=e250]:
+              - button "Cancel" [ref=e251] [cursor=pointer]
+              - button "Create 2 Schedules" [ref=e273] [cursor=pointer]
+  - alert [ref=e32]
