@@ -1,0 +1,15 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e4]:
+      - img "Logo" [ref=e6]
+      - paragraph [ref=e9]: move of the day
+      - generic [ref=e12]:
+        - heading "CrossOver" [level=1] [ref=e13]
+        - paragraph [ref=e14]: A quick shift to create space and beat your defender.
+        - paragraph [ref=e16]: "LEVEL: PRO"
+        - paragraph [ref=e17]: “Separation is created, not given.”
+        - button "Watch Video" [ref=e18] [cursor=pointer]:
+          - img [ref=e19]
+          - text: Watch Video
+        - paragraph [ref=e23]: Your Turn
+  - alert [ref=e25]
