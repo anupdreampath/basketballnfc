@@ -1,6 +1,6 @@
 import type { Settings, Schedule, DeviceType, Difficulty, ActiveMoveResponse } from '@/types'
 
-type VideoSlim = { move_name: string; difficulty: Difficulty }
+type VideoSlim = { move_name: string; difficulty: Difficulty; device_type: DeviceType }
 
 export function resolveActiveMove(
   device: DeviceType,
@@ -31,13 +31,17 @@ export function resolveActiveMove(
 
   if (!moveName) return null
 
+  // Find videos for this device OR fallback to desktop if none exist
+  const deviceVideos = allDeviceVideos.filter((v) => v.device_type === device)
+  const videosToUse = deviceVideos.length > 0 ? deviceVideos : allDeviceVideos
+
   // Find which difficulties are available via slot assignments OR move_name matching
   const slotDifficulties: Difficulty[] = (['beginner', 'intermediate', 'pro'] as Difficulty[]).filter((d) => {
     const slotKey = `slot_${d}_${device}_id` as keyof Settings
     return !!(settings as any)[slotKey]
   })
 
-  const moveDifficulties = allDeviceVideos
+  const moveDifficulties = videosToUse
     .filter((v) => v.move_name === moveName)
     .map((v) => v.difficulty)
 

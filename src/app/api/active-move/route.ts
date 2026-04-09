@@ -33,7 +33,6 @@ export async function GET(request: NextRequest) {
     supabase
       .from('videos')
       .select('move_name, difficulty, device_type')
-      .eq('device_type', device)
       .order('created_at', { ascending: false }),
   ])
 
