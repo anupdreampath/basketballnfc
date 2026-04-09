@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import type { Difficulty } from '@/types'
 
 interface Props {
@@ -42,6 +43,17 @@ export default function HeroOverlay({
         padding: '1.5rem',
       }}
     >
+      {/* Logo */}
+      <div style={{ marginBottom: 24 }}>
+        <Image
+          src="/white_logo-removebg-preview.png"
+          alt="Logo"
+          width={120}
+          height={60}
+          style={{ objectFit: 'contain' }}
+        />
+      </div>
+
       {/* "move of the day" — outside card, Cormorant 300 italic */}
       <div
         style={{
