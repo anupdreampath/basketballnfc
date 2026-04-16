@@ -337,7 +337,7 @@ export default function SettingsPage() {
 
       {/* ── Section 3b: Move Presets ── */}
       <div className="bg-zinc-900 rounded-xl p-5 border border-zinc-800 mb-4">
-        <PresetManager />
+        <PresetManager onApply={fetchAll} currentSettings={settings} />
       </div>
 
       {/* ── Section 4: Manual Override Move ── */}

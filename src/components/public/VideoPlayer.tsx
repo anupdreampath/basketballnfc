@@ -24,6 +24,7 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [heroVisible, setHeroVisible] = useState(false)
   const [chosenDifficulty, setChosenDifficulty] = useState<Difficulty | null>(null)
+  const [videoError, setVideoError] = useState<string | null>(null)
 
   // Transition splash → hero once both splash timer AND move data are ready
   useEffect(() => {
@@ -47,7 +48,11 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
     const res = await fetch(
       `/api/video?move=${encodeURIComponent(moveInfo.move_name)}&difficulty=${chosenDifficulty}&device=${deviceType}`
     )
-    if (!res.ok) { setState('playing'); return }
+    if (!res.ok) {
+      setVideoError('Video not available. Please try again later.')
+      setState('playing')
+      return
+    }
     const data = await res.json()
     setVideoUrl(data.url)
   }, [moveInfo, chosenDifficulty, deviceType])
@@ -56,13 +61,25 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
   useEffect(() => {
     const el = videoRef.current
     if (!el || !videoUrl) return
+
+    const handleError = () => {
+      setVideoError('Video failed to load. The file may no longer be available.')
+      setState('playing')
+    }
+    el.addEventListener('error', handleError)
+
     el.src = videoUrl
     el.load()
     el.play()
       .then(() => {
         setTimeout(() => setState('playing'), 600)
       })
-      .catch(() => setState('playing'))
+      .catch(() => {
+        setVideoError('Video failed to play. Please try again.')
+        setState('playing')
+      })
+
+    return () => el.removeEventListener('error', handleError)
   }, [videoUrl])
 
   return (
@@ -103,6 +120,43 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
           difficulty={chosenDifficulty}
           onComplete={handleIntroComplete}
         />
+      )}
+
+      {/* Video error overlay */}
+      {state === 'playing' && videoError && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.85)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 50,
+          gap: '16px',
+        }}>
+          <p style={{ color: '#f97316', fontSize: '18px', fontWeight: 600 }}>{videoError}</p>
+          <button
+            onClick={() => {
+              setVideoError(null)
+              setVideoUrl(null)
+              setHeroVisible(true)
+              setState('hero')
+            }}
+            style={{
+              background: '#f97316',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px 32px',
+              fontSize: '16px',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            Go Back
+          </button>
+        </div>
       )}
 
       {/* Hero overlay */}

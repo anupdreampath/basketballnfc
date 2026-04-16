@@ -62,6 +62,6 @@ export async function GET(request: NextRequest) {
     quote: (settings as any).move_quote ?? null,
     default_difficulty: scheduleDifficulty || (settings as any).default_difficulty || result.default_difficulty,
   }, {
-    headers: { 'Cache-Control': 'public, max-age=30, stale-while-revalidate=60' },
+    headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },
   })
 }

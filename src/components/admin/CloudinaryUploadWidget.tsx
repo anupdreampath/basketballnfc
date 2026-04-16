@@ -47,24 +47,6 @@ export default function CloudinaryUploadWidget({ deviceType, onSuccess, disabled
       widgetRef.current = window.cloudinary.createUploadWidget(
         {
           cloudName: CLOUDINARY_CLOUD_NAME,
-          apiKey: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY, // fine to expose — it's the API key, not secret
-          // Signed upload: widget calls this function with params, we return the signature
-          uploadSignature: async (
-            callback: (sig: string) => void,
-            paramsToSign: Record<string, string>
-          ) => {
-            try {
-              const res = await fetch('/api/cloudinary-signature', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ params_to_sign: paramsToSign }),
-              })
-              const { signature } = await res.json()
-              callback(signature)
-            } catch {
-              console.error('Signature fetch failed')
-            }
-          },
           uploadPreset: CLOUDINARY_UPLOAD_PRESET,
           folder: `nfc_brand/${deviceType}`,
           resourceType: 'video',

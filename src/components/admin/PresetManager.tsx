@@ -35,9 +35,32 @@ const EMPTY_FORM = {
   slot_pro_desktop_id: '',
 }
 
-export default function PresetManager() {
+interface PresetManagerProps {
+  onApply?: () => void
+  currentSettings?: Settings | null
+}
+
+const COMPARE_KEYS = [
+  'override_move_name', 'default_difficulty', 'front_page_title',
+  'move_description', 'move_level', 'move_quote',
+  'slot_beginner_mobile_id', 'slot_beginner_tablet_id', 'slot_beginner_desktop_id',
+  'slot_intermediate_mobile_id', 'slot_intermediate_tablet_id', 'slot_intermediate_desktop_id',
+  'slot_pro_mobile_id', 'slot_pro_tablet_id', 'slot_pro_desktop_id',
+] as const
+
+function isPresetActive(preset: Preset, settings: Settings): boolean {
+  return COMPARE_KEYS.every(key => (preset[key] || null) === (settings[key as keyof Settings] || null))
+}
+
+export default function PresetManager({ onApply, currentSettings }: PresetManagerProps = {}) {
   const [presets, setPresets] = useState<Preset[]>([])
   const [videos, setVideos] = useState<Video[]>([])
+  const [settings, setSettings] = useState<Settings | null>(null)
+
+  // Sync with parent settings when passed as prop
+  useEffect(() => {
+    if (currentSettings) setSettings(currentSettings)
+  }, [currentSettings])
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<Preset | null>(null)
   const [loading, setLoading] = useState(false)
@@ -47,6 +70,7 @@ export default function PresetManager() {
   useEffect(() => {
     loadPresets()
     loadVideos()
+    loadSettings()
   }, [])
 
   async function loadPresets() {
@@ -63,6 +87,14 @@ export default function PresetManager() {
       const data = await res.json()
       setVideos(Array.isArray(data) ? data : [])
     } catch { setVideos([]) }
+  }
+
+  async function loadSettings() {
+    try {
+      const res = await fetch('/api/settings')
+      const data = await res.json()
+      setSettings(data)
+    } catch { /* ignore */ }
   }
 
   function handleEdit(preset: Preset) {
@@ -163,6 +195,45 @@ export default function PresetManager() {
       await fetch(`/api/presets/${id}`, { method: 'DELETE' })
       await loadPresets()
     } catch { setError('Failed to delete') }
+  }
+
+  const [applying, setApplying] = useState<string | null>(null)
+
+  async function handleApply(preset: Preset) {
+    setApplying(preset.id)
+    setError(null)
+    try {
+      const patch: Record<string, any> = {
+        override_move_name: preset.override_move_name || null,
+        default_difficulty: preset.default_difficulty || null,
+        front_page_title: preset.front_page_title || null,
+        move_description: preset.move_description || null,
+        move_level: preset.move_level || null,
+        move_quote: preset.move_quote || null,
+        slot_beginner_mobile_id: preset.slot_beginner_mobile_id || null,
+        slot_beginner_tablet_id: preset.slot_beginner_tablet_id || null,
+        slot_beginner_desktop_id: preset.slot_beginner_desktop_id || null,
+        slot_intermediate_mobile_id: preset.slot_intermediate_mobile_id || null,
+        slot_intermediate_tablet_id: preset.slot_intermediate_tablet_id || null,
+        slot_intermediate_desktop_id: preset.slot_intermediate_desktop_id || null,
+        slot_pro_mobile_id: preset.slot_pro_mobile_id || null,
+        slot_pro_tablet_id: preset.slot_pro_tablet_id || null,
+        slot_pro_desktop_id: preset.slot_pro_desktop_id || null,
+      }
+      const res = await fetch('/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(patch),
+      })
+      if (!res.ok) throw new Error('Failed to apply preset')
+      const updated = await res.json()
+      setSettings(updated)
+      onApply?.()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to apply preset')
+    } finally {
+      setApplying(null)
+    }
   }
 
   const set = (key: string, val: string) => setFormData(prev => ({ ...prev, [key]: val }))
@@ -370,7 +441,20 @@ export default function PresetManager() {
                   )}
                 </div>
               </div>
-              <div className="flex gap-2 ml-3 shrink-0">
+              <div className="flex gap-2 ml-3 shrink-0 items-center">
+                {settings && isPresetActive(preset, settings) ? (
+                  <span className="bg-green-500/20 border border-green-500/40 text-green-300 rounded-md px-3 py-1 text-xs font-medium">
+                    Active
+                  </span>
+                ) : (
+                  <button
+                    onClick={() => handleApply(preset)}
+                    disabled={applying === preset.id}
+                    className="bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white rounded-md px-3 py-1 text-xs font-medium transition-colors"
+                  >
+                    {applying === preset.id ? 'Applying…' : 'Apply'}
+                  </button>
+                )}
                 <button onClick={() => handleEdit(preset)} className="text-blue-400 hover:text-blue-300 text-xs">Edit</button>
                 <button onClick={() => handleDelete(preset.id)} className="text-red-400 hover:text-red-300 text-xs">Delete</button>
               </div>
