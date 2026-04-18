@@ -6,6 +6,7 @@ import { DIFFICULTIES, DIFFICULTY_LABELS } from '@/types'
 import VideoCard from './VideoCard'
 import CloudinaryUploadWidget from './CloudinaryUploadWidget'
 import { getThumbnailFromVideoUrl } from '@/lib/cloudinary-url'
+import { toEmbedUrl, getExternalThumbnail } from '@/lib/video-url'
 
 const DEVICE_TABS: { label: string; value: DeviceType; icon: string }[] = [
   { label: 'Mobile', value: 'mobile', icon: '📱' },
@@ -29,6 +30,10 @@ export default function VideoLibrary() {
   const [showMetaModal, setShowMetaModal] = useState(false)
   const [pendingUpload, setPendingUpload] = useState<{ public_id: string; secure_url: string; duration?: number; bytes?: number } | null>(null)
 
+  // URL import modal state
+  const [showUrlModal, setShowUrlModal] = useState(false)
+  const [urlInput, setUrlInput] = useState('')
+
   const fetchVideos = useCallback(async () => {
     setLoading(true)
     const [videosRes, movesRes] = await Promise.all([
@@ -49,6 +54,16 @@ export default function VideoLibrary() {
     setShowMetaModal(true)
   }
 
+  function handleUrlSubmit() {
+    const raw = urlInput.trim()
+    if (!raw) return
+    const embedUrl = toEmbedUrl(raw)
+    setPendingUpload({ public_id: raw, secure_url: embedUrl })
+    setUrlInput('')
+    setShowUrlModal(false)
+    setShowMetaModal(true)
+  }
+
   async function handleMetaSave() {
     if (!pendingUpload || !uploadMeta.moveName.trim()) return
     setShowMetaModal(false)
@@ -63,7 +78,7 @@ export default function VideoLibrary() {
         device_type: activeTab,
         cloudinary_id: pendingUpload.public_id,
         cloudinary_url: pendingUpload.secure_url,
-        thumbnail_url: getThumbnailFromVideoUrl(pendingUpload.secure_url),
+        thumbnail_url: getExternalThumbnail(pendingUpload.public_id) ?? getExternalThumbnail(pendingUpload.secure_url) ?? getThumbnailFromVideoUrl(pendingUpload.secure_url),
         duration_secs: pendingUpload.duration ? Math.round(pendingUpload.duration) : null,
         file_size_mb: pendingUpload.bytes ? parseFloat((pendingUpload.bytes / 1_048_576).toFixed(2)) : null,
       }),
@@ -78,6 +93,40 @@ export default function VideoLibrary() {
 
   return (
     <div>
+      {/* URL import modal */}
+      {showUrlModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-zinc-900 rounded-xl p-6 w-full max-w-sm border border-zinc-700">
+            <h3 className="text-white font-semibold mb-1">Add video by URL</h3>
+            <p className="text-gray-500 text-sm mb-4">Paste a YouTube, Vimeo, or direct video link.</p>
+            <input
+              autoFocus
+              type="url"
+              value={urlInput}
+              onChange={(e) => setUrlInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleUrlSubmit()}
+              placeholder="https://youtube.com/shorts/..."
+              className="w-full bg-zinc-800 border border-zinc-600 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 placeholder-gray-600 mb-4"
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setShowUrlModal(false); setUrlInput('') }}
+                className="flex-1 text-gray-400 border border-zinc-700 rounded-lg py-2 text-sm hover:border-zinc-500"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUrlSubmit}
+                disabled={!urlInput.trim()}
+                className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:opacity-40 text-white rounded-lg py-2 text-sm font-medium"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Upload meta modal */}
       {showMetaModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
@@ -162,7 +211,18 @@ export default function VideoLibrary() {
             </button>
           ))}
         </div>
-        <CloudinaryUploadWidget deviceType={activeTab} onSuccess={handleUploadSuccess} />
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowUrlModal(true)}
+            className="flex items-center gap-2 bg-zinc-700 hover:bg-zinc-600 text-white font-medium rounded-lg px-4 py-2 text-sm transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            Add by URL
+          </button>
+          <CloudinaryUploadWidget deviceType={activeTab} onSuccess={handleUploadSuccess} />
+        </div>
       </div>
 
       {/* Video grid */}

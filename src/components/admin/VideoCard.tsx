@@ -4,6 +4,7 @@ import { useState } from 'react'
 import type { Video, Difficulty } from '@/types'
 import { DIFFICULTIES, DIFFICULTY_LABELS } from '@/types'
 import { getThumbnailFromVideoUrl } from '@/lib/cloudinary-url'
+import { getExternalThumbnail } from '@/lib/video-url'
 
 interface Props {
   video: Video
@@ -69,7 +70,7 @@ export default function VideoCard({ video, onDelete, onUpdate }: Props) {
         {video.cloudinary_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={getThumbnailFromVideoUrl(video.cloudinary_url)}
+            src={video.thumbnail_url ?? getExternalThumbnail(video.cloudinary_url) ?? getThumbnailFromVideoUrl(video.cloudinary_url)}
             alt={video.title}
             className="w-full h-full object-cover"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}

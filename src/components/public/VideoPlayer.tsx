@@ -7,6 +7,7 @@ import SplashScreen from './SplashScreen'
 import HeroOverlay from './HeroOverlay'
 import DifficultyIntro from './DifficultyIntro'
 import type { DeviceType, Difficulty } from '@/types'
+import { isEmbedUrl } from '@/lib/video-url'
 
 type PlayerState = 'splash' | 'hero' | 'difficulty-intro' | 'loading' | 'playing'
 
@@ -25,6 +26,7 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
   const [heroVisible, setHeroVisible] = useState(false)
   const [chosenDifficulty, setChosenDifficulty] = useState<Difficulty | null>(null)
   const [videoError, setVideoError] = useState<string | null>(null)
+  const isEmbed = videoUrl ? isEmbedUrl(videoUrl) : false
 
   // Transition splash → hero once both splash timer AND move data are ready
   useEffect(() => {
@@ -57,10 +59,10 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
     setVideoUrl(data.url)
   }, [moveInfo, chosenDifficulty, deviceType])
 
-  // Play video once URL is available
+  // Play native video once URL is available (skip for embeds)
   useEffect(() => {
     const el = videoRef.current
-    if (!el || !videoUrl) return
+    if (!el || !videoUrl || isEmbed) return
 
     const handleError = () => {
       setVideoError('Video failed to load. The file may no longer be available.')
@@ -80,11 +82,18 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
       })
 
     return () => el.removeEventListener('error', handleError)
-  }, [videoUrl])
+  }, [videoUrl, isEmbed])
+
+  // Transition to playing for embed iframes
+  useEffect(() => {
+    if (!videoUrl || !isEmbed) return
+    const timer = setTimeout(() => setState('playing'), 1200)
+    return () => clearTimeout(timer)
+  }, [videoUrl, isEmbed])
 
   return (
     <>
-      {/* Background video — always present but hidden until playing */}
+      {/* Background video — hidden when using an embed */}
       <video
         ref={videoRef}
         autoPlay
@@ -98,11 +107,34 @@ export default function VideoPlayer({ defaultDeviceType }: Props) {
           height: '100vh',
           objectFit: 'cover',
           background: '#000',
-          opacity: state === 'playing' ? 1 : (state === 'hero' || state === 'difficulty-intro') ? 0.3 : 0,
+          opacity: isEmbed ? 0 : state === 'playing' ? 1 : (state === 'hero' || state === 'difficulty-intro') ? 0.3 : 0,
           transition: 'opacity 0.8s ease',
           zIndex: 1,
         }}
       />
+
+      {/* Iframe for YouTube / Vimeo embeds */}
+      {isEmbed && videoUrl && (
+        <iframe
+          src={videoUrl}
+          allow="autoplay; fullscreen"
+          allowFullScreen
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 'max(100vw, 177.78vh)',
+            height: 'max(100vh, 56.25vw)',
+            border: 'none',
+            background: '#000',
+            opacity: state === 'playing' ? 1 : 0,
+            transition: 'opacity 0.8s ease',
+            zIndex: 1,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
 
       {/* Splash screen - also shown during video loading */}
       {(state === 'splash' || state === 'loading') && (
